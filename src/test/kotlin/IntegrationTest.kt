@@ -14,10 +14,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import java.time.LocalDateTime
 
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class IntegrationTest {
-
     @LocalServerPort
     private var port: Int = 0
 
@@ -32,26 +30,24 @@ class IntegrationTest {
 
         val entity = HttpEntity<String>(headers)
 
-        val response = restTemplate.exchange(
-            "http://localhost:$port",
-            HttpMethod.GET,
-            entity,
-            String::class.java
-        )
+        val response =
+            restTemplate.exchange(
+                "http://localhost:$port",
+                HttpMethod.GET,
+                entity,
+                String::class.java,
+            )
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
         assertThat(response.body).contains("¡Oops! Página no encontrada")
-
     }
 
     @Test
-    fun ` URI time return localtime` (){
+    fun ` URI time return localtime`() {
         val response = restTemplate.getForEntity("http://localhost:$port/time", TimeDTO::class.java)
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertNotNull(response.body?.time)
         assertThat(response.body!!.time).isBeforeOrEqualTo(LocalDateTime.now())
-
     }
 }
-
