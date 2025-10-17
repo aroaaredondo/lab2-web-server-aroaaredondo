@@ -23,6 +23,8 @@ HTTPS was enabled using a self-signed certificate, and HTTP/2 was activated on t
    `curl -k -H "Accept: text/html,*/*;q=0.9" -i https://127.0.0.1:8443/`
 4. The /time endpoint was also verified to work correctly:
    `curl -k -i https://127.0.0.1:8443/time`
+5. To automate tests over HTTPS with a self-signed certificate, a custom TestConfig.kt was added in src/test/kotlin
+   This configuration creates a RestTemplate that trusts the self-signed certificate, allowing integration tests to run over HTTPS without SSL validation errors.
 
 ## Technical Decisions
 
