@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.context.annotation.Import
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -15,12 +16,11 @@ import org.springframework.http.MediaType
 import java.time.LocalDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestConfig::class)
 class IntegrationTest {
-    @LocalServerPort
-    private var port: Int = 0
+    @LocalServerPort private var port: Int = 0
 
-    @Autowired
-    private lateinit var restTemplate: TestRestTemplate
+    @Autowired private lateinit var restTemplate: TestRestTemplate
 
     @Test
     fun `should return error page `() {
@@ -32,7 +32,7 @@ class IntegrationTest {
 
         val response =
             restTemplate.exchange(
-                "http://localhost:$port",
+                "https://localhost:$port",
                 HttpMethod.GET,
                 entity,
                 String::class.java,
@@ -44,7 +44,8 @@ class IntegrationTest {
 
     @Test
     fun ` URI time return localtime`() {
-        val response = restTemplate.getForEntity("http://localhost:$port/time", TimeDTO::class.java)
+        val response =
+            restTemplate.getForEntity("https://localhost:$port/time", TimeDTO::class.java)
 
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         assertNotNull(response.body?.time)
